@@ -93,3 +93,11 @@ body {
     margin: 4px 0;
   }
 }
+
+/* Every event here is all-day (a race spans whole days, never specific hours), so
+   Week view's hour-by-hour grid is always empty — just dead scrollable space below
+   the day headers. Hide it and keep only the all-day event strip. */
+.calendar-shell .rbc-time-view .rbc-time-content,
+.calendar-shell .rbc-time-view .rbc-time-header-gutter {
+  display: none;
+}
