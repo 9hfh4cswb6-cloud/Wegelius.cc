@@ -7,6 +7,10 @@ import type { RiderCalendarEvent } from "@/lib/calendar-events";
 
 interface Props {
   events: RiderCalendarEvent[];
+  /** Fired when a rider's own event is clicked. Team Calendar events aren't editable
+   * here (they belong to whichever riders are actually on that race), so clicks on
+   * those are ignored. */
+  onEventClick?: (entryId: string) => void;
 }
 
 const eventPropGetter: EventPropGetter<RiderCalendarEvent> = (event) => {
@@ -18,7 +22,7 @@ const eventPropGetter: EventPropGetter<RiderCalendarEvent> = (event) => {
   return { className: "team-block" };
 };
 
-export default function RiderMonthCalendar({ events }: Props) {
+export default function RiderMonthCalendar({ events, onEventClick }: Props) {
   // react-big-calendar can manage date/view internally when left uncontrolled, but
   // that path is flaky under React 19 (Back/Next silently no-op) — controlling it
   // explicitly here sidesteps that.
@@ -40,6 +44,9 @@ export default function RiderMonthCalendar({ events }: Props) {
         onView={setView}
         views={[Views.MONTH, Views.WEEK, Views.AGENDA]}
         eventPropGetter={eventPropGetter}
+        onSelectEvent={(event) => {
+          if (event.resource.kind === "rider") onEventClick?.(event.id);
+        }}
         popup
         style={{ height: "100%" }}
       />

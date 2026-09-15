@@ -17,17 +17,10 @@ export default async function HomePage() {
 
   return (
     <main className="flex h-dvh flex-col">
-      <header className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+      <header className="flex items-center border-b border-gray-200 px-4 py-3">
         <h1 className="text-base font-semibold text-gray-900 sm:text-lg">
           Rider Race Calendar
         </h1>
-        {data && (
-          <span className="text-xs text-gray-500 sm:text-sm">
-            {data.riders.length} riders · {data.entries.length} entries
-            {data.unscheduledBlockCount > 0 &&
-              ` · ${data.unscheduledBlockCount} races unscheduled`}
-          </span>
-        )}
       </header>
 
       <div className="min-h-0 flex-1">
@@ -41,6 +34,7 @@ export default async function HomePage() {
             riders={data.riders}
             raceBlocks={data.raceBlocks}
             entries={data.entries}
+            unscheduledBlockCount={data.unscheduledBlockCount}
           />
         )}
       </div>
