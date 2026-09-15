@@ -1,11 +1,25 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { Rider, TimelineEntry } from "@/lib/airtable/data";
+
+export interface TimelineGroup {
+  id: string;
+  content: string;
+}
+
+export interface TimelineItem {
+  id: string;
+  group: string;
+  start: string;
+  end: string;
+  content: string;
+  title?: string;
+  className?: string;
+}
 
 interface Props {
-  riders: Rider[];
-  entries: TimelineEntry[];
+  groups: TimelineGroup[];
+  items: TimelineItem[];
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -17,7 +31,7 @@ function toExclusiveEnd(dateStr: string): Date {
   return new Date(new Date(dateStr).getTime() + DAY_MS);
 }
 
-export default function RiderTimeline({ riders, entries }: Props) {
+export default function RiderTimeline({ groups, items }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,22 +50,16 @@ export default function RiderTimeline({ riders, entries }: Props) {
 
         if (disposed || !containerRef.current) return;
 
-        const groups = new DataSet(
-          riders.map((r) => ({
-            id: r.id,
-            content: r.name,
-          })),
-        );
-
-        const items = new DataSet(
-          entries.map((e) => ({
-            id: e.id,
-            group: e.riderId,
-            start: e.start,
-            end: toExclusiveEnd(e.end),
-            content: e.raceBlockName,
-            title: `${e.raceBlockName} — ${e.role ?? "Unassigned role"}`,
-            className: e.role === "Starter" ? "entry-starter" : "entry-reserve",
+        const groupsDs = new DataSet(groups);
+        const itemsDs = new DataSet(
+          items.map((it) => ({
+            id: it.id,
+            group: it.group,
+            start: it.start,
+            end: toExclusiveEnd(it.end),
+            content: it.content,
+            title: it.title,
+            className: it.className,
           })),
         );
 
@@ -69,7 +77,7 @@ export default function RiderTimeline({ riders, entries }: Props) {
           tooltip: { followMouse: true },
         };
 
-        timelineInstance = new Timeline(containerRef.current, items, groups, options);
+        timelineInstance = new Timeline(containerRef.current, itemsDs, groupsDs, options);
       } catch (err) {
         console.error("Failed to initialize timeline:", err);
         if (!disposed) setError("Failed to render the timeline.");
@@ -80,7 +88,7 @@ export default function RiderTimeline({ riders, entries }: Props) {
       disposed = true;
       timelineInstance?.destroy();
     };
-  }, [riders, entries]);
+  }, [groups, items]);
 
   if (error) {
     return <div className="p-4 text-sm text-red-600">{error}</div>;

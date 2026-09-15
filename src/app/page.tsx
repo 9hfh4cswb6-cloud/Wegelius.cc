@@ -1,5 +1,5 @@
 import { getTimelineData } from "@/lib/airtable/data";
-import RiderTimeline from "@/components/RiderTimeline";
+import TimelineView from "@/components/TimelineView";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +36,13 @@ export default async function HomePage() {
             Couldn&apos;t load data from Airtable: {loadError}
           </div>
         )}
-        {data && <RiderTimeline riders={data.riders} entries={data.entries} />}
+        {data && (
+          <TimelineView
+            riders={data.riders}
+            raceBlocks={data.raceBlocks}
+            entries={data.entries}
+          />
+        )}
       </div>
     </main>
   );
