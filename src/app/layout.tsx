@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "vis-timeline/styles/vis-timeline-graph2d.min.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./globals.css";
 
 const geistSans = Geist({

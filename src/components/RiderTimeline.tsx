@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { parseLocalDate, addDays } from "@/lib/dates";
 
 export interface TimelineGroup {
   id: string;
@@ -23,13 +24,6 @@ interface Props {
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-
-// Race Block End Date is the last inclusive day of the race. vis-timeline's range
-// items treat `end` as an exact boundary, so without this the bar would visually
-// stop one day short of the race's actual last day.
-function toExclusiveEnd(dateStr: string): Date {
-  return new Date(new Date(dateStr).getTime() + DAY_MS);
-}
 
 export default function RiderTimeline({ groups, items }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -55,8 +49,11 @@ export default function RiderTimeline({ groups, items }: Props) {
           items.map((it) => ({
             id: it.id,
             group: it.group,
-            start: it.start,
-            end: toExclusiveEnd(it.end),
+            start: parseLocalDate(it.start),
+            // Race Block End Date is the last inclusive day of the race. vis-timeline's
+            // range items treat `end` as an exact boundary, so without the +1 day the
+            // bar would visually stop one day short of the race's actual last day.
+            end: addDays(parseLocalDate(it.end), 1),
             content: it.content,
             title: it.title,
             className: it.className,

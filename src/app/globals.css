@@ -28,20 +28,25 @@ body {
   color: #111827;
 }
 
-/* vis-timeline item styling — starters vs reserves */
-.vis-item.entry-starter {
+/* Shared event/item colors — starter/reserve/team-block classes are reused on both
+   the vis-timeline Gantt grid (.vis-item) and the react-big-calendar month view
+   (.rbc-event). */
+.vis-item.entry-starter,
+.rbc-event.entry-starter {
   background-color: #15803d;
   border-color: #14532d;
   color: #ffffff;
 }
 
-.vis-item.entry-reserve {
+.vis-item.entry-reserve,
+.rbc-event.entry-reserve {
   background-color: #ca8a04;
   border-color: #854d0e;
   color: #ffffff;
 }
 
-.vis-item.team-block {
+.vis-item.team-block,
+.rbc-event.team-block {
   background-color: #e5e7eb;
   border-color: #9ca3af;
   color: #111827;
@@ -62,5 +67,29 @@ body {
   }
   .vis-item .vis-item-content {
     font-size: 10px;
+  }
+}
+
+/* react-big-calendar has no dark skin either — same reasoning as .timeline-shell. */
+.calendar-shell {
+  background: #ffffff;
+  color: #111827;
+}
+
+.calendar-shell .rbc-toolbar {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.calendar-shell .rbc-event {
+  font-size: 11px;
+}
+
+@media (max-width: 640px) {
+  .calendar-shell .rbc-toolbar {
+    font-size: 13px;
+  }
+  .calendar-shell .rbc-toolbar-label {
+    margin: 4px 0;
   }
 }
