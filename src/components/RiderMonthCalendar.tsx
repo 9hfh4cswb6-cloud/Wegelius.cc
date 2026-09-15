@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Calendar, Views, type EventPropGetter, type View } from "react-big-calendar";
 import { calendarLocalizer } from "@/lib/calendar-localizer";
 import type { RiderCalendarEvent } from "@/lib/calendar-events";
@@ -29,11 +29,20 @@ export default function RiderMonthCalendar({ events, onEventClick }: Props) {
   const [date, setDate] = useState(new Date());
   const [view, setView] = useState<View>(Views.MONTH);
 
+  // The Team Calendar context races render as small muted bars in Month/Week,
+  // which reads fine — but Agenda is a flat list where they'd carry the same
+  // visual weight as the rider's own races, cluttering what should read as
+  // "my races." So Agenda only ever shows this rider's own entries.
+  const visibleEvents = useMemo(
+    () => (view === Views.AGENDA ? events.filter((e) => e.resource.kind === "rider") : events),
+    [events, view],
+  );
+
   return (
     <div className="calendar-shell h-full w-full p-2">
       <Calendar
         localizer={calendarLocalizer}
-        events={events}
+        events={visibleEvents}
         startAccessor="start"
         endAccessor="end"
         titleAccessor="title"
