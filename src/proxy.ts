@@ -25,5 +25,9 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  // Icon routes must stay public: iOS fetches apple-icon.png for "Add to Home
+  // Screen" without the login cookie, and gating it meant Safari got a redirect
+  // to /login instead of an image — which it silently fell back to rendering
+  // as a black icon.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|apple-icon.png|icon.png).*)"],
 };
