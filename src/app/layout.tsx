@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Rider Race Calendar",
   description: "Rider assignment timeline for the team's race calendar.",
+  appleWebApp: {
+    title: "Rider Calendar",
+  },
 };
 
 export const viewport: Viewport = {
