@@ -1,0 +1,28 @@
+import { NextRequest, NextResponse } from "next/server";
+import { AUTH_COOKIE, computeAuthToken } from "@/lib/auth";
+
+export async function POST(req: NextRequest) {
+  const expectedPassword = process.env.APP_PASSWORD;
+  if (!expectedPassword) {
+    return NextResponse.json(
+      { error: "APP_PASSWORD is not configured on the server." },
+      { status: 500 },
+    );
+  }
+
+  const { password } = await req.json().catch(() => ({ password: "" }));
+  if (password !== expectedPassword) {
+    return NextResponse.json({ error: "Incorrect password." }, { status: 401 });
+  }
+
+  const token = await computeAuthToken();
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set(AUTH_COOKIE, token!, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+  });
+  return res;
+}
